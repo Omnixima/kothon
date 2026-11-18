@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kothon mockup B: Dark studio</title>
+    <style>
+      @import url("/node_modules/@fontsource-variable/noto-sans-bengali/index.css");
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        width: 880px;
+        height: 600px;
+        overflow: hidden;
+        display: flex;
+        font-family:
+          -apple-system, "Noto Sans Bengali Variable", system-ui, sans-serif;
+        background: #0e0b14;
+        color: #ece6f5;
+      }
+      .rail {
+        width: 68px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 0;
+        border-right: 1px solid #1e1828;
+        background: #0a0810;
+      }
+      .rail img {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        margin-bottom: 12px;
+      }
+      .ic {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        color: #6e6380;
+        font-size: 18px;
+      }
+      .ic.on {
+        background: #22173a;
+        color: #c4a5ff;
+        box-shadow: inset 0 0 0 1px #3a2963;
+      }
+      .ic.bottom {
+        margin-top: auto;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        padding: 18px 26px;
+        gap: 12px;
+      }
+      header h2 {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .pill {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #b9a8d6;
+        background: #171222;
+        border: 1px solid #2a2140;
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+      .pill i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #34d399;
+        box-shadow: 0 0 10px #34d399;
+      }
+      .search {
+        margin: 0 26px 14px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: #15101e;
+        border: 1px solid #241c33;
+        color: #6e6380;
+        font-size: 13px;
+      }
+      .feed {
+        padding: 0 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow: hidden;
+      }
+      .day {
+        font-size: 11px;
+        color: #6e6380;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .msg {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+      }
+      .time {
+        width: 44px;
+        font-size: 11px;
+        color: #6e6380;
+        padding-top: 14px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .bubble {
+        flex: 1;
+        background: linear-gradient(180deg, #181224, #140f1e);
+        border: 1px solid #251d36;
+        border-radius: 4px 18px 18px 18px;
+        padding: 12px 16px;
+        font-size: 16.5px;
+        line-height: 1.65;
+      }
+      .meta {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+        font-size: 11px;
+        color: #7d70a0;
+        font-family: -apple-system;
+      }
+      .tag {
+        color: #c4a5ff;
+        background: #241a3a;
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      .fix {
+        color: #34d399;
+      }
+      .dock {
+        margin: auto 26px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        border-radius: 18px;
+        background: linear-gradient(90deg, #2b1050, #3f0159);
+        box-shadow: 0 12px 30px -12px #7c3aed;
+      }
+      .mic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f5edff;
+        display: grid;
+        place-items: center;
+        color: #3f0159;
+        font-size: 18px;
+      }
+      .dock b {
+        font-size: 14px;
+      }
+      .dock small {
+        display: block;
+        font-size: 12px;
+        color: #d9c7f7;
+        font-weight: 400;
+      }
+      kbd {
+        margin-left: auto;
+        font: 600 12px -apple-system;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 5px 9px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="rail">
+      <img src="mouth.png" alt="" />
+      <div class="ic on">◉</div>
+      <div class="ic">▤</div>
+      <div class="ic">◈</div>
+      <div class="ic">✦</div>
+      <div class="ic bottom">⚙</div>
+    </nav>
+    <main>
+      <header>
+        <h2>কথোপকথন · Dictations</h2>
+        <div class="pill"><i></i>Bangla FastConformer · on device</div>
+      </header>
+      <div class="search">⌕ Search everything you've said…</div>
+      <div class="feed">
+        <div class="day">Today</div>
+        <div class="msg">
+          <div class="time">21:08</div>
+          <div class="bubble">
+            আজ আবহাওয়া খুব সুন্দর। তুমি কি আজ অফিসে যাবে?
+            <div class="meta">
+              <span class="tag">Slack</span><span>9 words · 0.05 s</span>
+            </div>
+          </div>
+        </div>
+        <div class="msg">
+          <div class="time">20:08</div>
+          <div class="bubble">
+            রিপোর্টটা আমি সন্ধ্যার মধ্যে পাঠাব, তারপর মিটিংয়ে কথা বলব।
+            <div class="meta">
+              <span class="tag">Mail</span
+              ><span class="fix">✓ Learned: পাঠিয়ে দেব → পাঠাব</span>
+            </div>
+          </div>
+        </div>
+        <div class="msg">
+          <div class="time">19:08</div>
+          <div class="bubble">
+            কিছু জাহাজ তার বৈশিষ্ট্য পুস্তিকায় বার্লিন, জার্মানি দেখায়।
+            <div class="meta">
+              <span class="tag">Notes</span><span>8 words · 0.04 s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dock">
+        <div class="mic">●</div>
+        <div>
+          <b>Hold to speak Bangla</b
+          ><small>Text appears wherever your cursor is</small>
+        </div>
+        <kbd>⌥ Space</kbd>
+      </div>
+    </main>
+  </body>
+</html>

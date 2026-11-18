@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kothon mockup A: Glass dashboard</title>
+    <style>
+      @import url("/node_modules/@fontsource-variable/noto-sans-bengali/index.css");
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        width: 880px;
+        height: 600px;
+        overflow: hidden;
+        font-family:
+          -apple-system, "Noto Sans Bengali Variable", system-ui, sans-serif;
+        color: #1d1430;
+        background:
+          radial-gradient(60% 70% at 100% 0%, #f3d9ff 0%, transparent 60%),
+          radial-gradient(60% 70% at 0% 100%, #dcd4ff 0%, transparent 60%),
+          #f7f3fc;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 24px 10px;
+      }
+      .top img {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+      }
+      .brand {
+        width: 84px;
+        height: 32px;
+        background: #3f0159;
+        -webkit-mask: url(/src/assets/kothon-wordmark.png) left center / contain
+          no-repeat;
+        mask: url(/src/assets/kothon-wordmark.png) left center / contain
+          no-repeat;
+      }
+      .tabs {
+        margin-left: auto;
+        display: flex;
+        gap: 2px;
+        padding: 4px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(80, 40, 140, 0.08);
+      }
+      .tabs span {
+        padding: 7px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b5f80;
+      }
+      .tabs .on {
+        background: #3f0159;
+        color: white;
+        box-shadow: 0 4px 12px -4px rgba(63, 1, 89, 0.6);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 16px;
+        padding: 12px 24px 24px;
+        height: 520px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        border-radius: 22px;
+        box-shadow: 0 10px 30px -14px rgba(60, 20, 110, 0.25);
+        padding: 18px 20px;
+      }
+      .hero {
+        grid-row: span 2;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        background: linear-gradient(160deg, #4a0b6b 0%, #2a0040 100%);
+        color: white;
+        border: none;
+      }
+      .hero .k {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        opacity: 0.65;
+        font-weight: 600;
+      }
+      .hero h1 {
+        font-size: 30px;
+        line-height: 1.25;
+        font-weight: 700;
+      }
+      .keys {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+      kbd {
+        font: 600 14px -apple-system;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-bottom-width: 3px;
+        padding: 5px 10px;
+        border-radius: 9px;
+      }
+      .wave {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        height: 54px;
+        margin: 6px 0;
+      }
+      .wave i {
+        width: 6px;
+        border-radius: 4px;
+        background: #d8b4fe;
+        opacity: 0.9;
+      }
+      .last {
+        margin-top: auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 14px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .last small {
+        display: block;
+        font-size: 11px;
+        opacity: 0.6;
+        margin-bottom: 4px;
+        font-family: -apple-system;
+      }
+      .stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .stat b {
+        font-size: 26px;
+        letter-spacing: -0.5px;
+      }
+      .muted {
+        color: #7a6f8c;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .model {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: #f5effc;
+      }
+      .model .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px #dcfce7;
+      }
+      .model div {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .model span {
+        margin-left: auto;
+        font-size: 12px;
+        color: #6d28d9;
+        font-weight: 700;
+      }
+      .today {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .today .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .today .link {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6d28d9;
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        gap: 18px;
+        align-items: end;
+      }
+      .pair b {
+        display: block;
+        font-size: 28px;
+        letter-spacing: -0.6px;
+        line-height: 1;
+      }
+      .pair em {
+        font-style: normal;
+        font-size: 14px;
+        font-weight: 600;
+        margin-left: 2px;
+        color: #4b3d63;
+      }
+      .pair small {
+        display: block;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #7a6f8c;
+      }
+      .bars {
+        display: flex;
+        gap: 4px;
+        align-items: flex-end;
+        height: 44px;
+        justify-content: flex-end;
+      }
+      .bars i {
+        width: 9px;
+        border-radius: 3px;
+        background: #e4d8f5;
+      }
+      .bars i.now {
+        background: #6d28d9;
+      }
+      .today .model {
+        margin-top: 0;
+      }
+      .model div small {
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        color: #7a6f8c;
+        margin-top: 1px;
+      }
+      .toggles div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        font-size: 14px;
+        border-bottom: 1px solid #efe8f7;
+      }
+      .toggles div:last-child {
+        border: 0;
+      }
+      .sw {
+        width: 36px;
+        height: 21px;
+        border-radius: 12px;
+        background: #6d28d9;
+        position: relative;
+      }
+      .sw::after {
+        content: "";
+        position: absolute;
+        right: 3px;
+        top: 3px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: white;
+      }
+      .sw.off {
+        background: #d9d0e6;
+      }
+      .sw.off::after {
+        left: 3px;
+        right: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <img src="mouth.png" alt="" />
+      <span class="brand" aria-label="Kothon"></span>
+      <div class="tabs">
+        <span class="on">Home</span><span>History</span><span>Models</span
+        ><span>Settings</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card hero">
+        <span class="k">Ready to listen</span>
+        <h1>বলুন, কথন লিখে দিবে।</h1>
+        <div class="keys">Hold <kbd>⌥</kbd><kbd>Space</kbd> in any app</div>
+        <div class="wave">
+          <i style="height: 14px"></i><i style="height: 28px"></i
+          ><i style="height: 44px"></i><i style="height: 30px"></i
+          ><i style="height: 52px"></i><i style="height: 36px"></i
+          ><i style="height: 20px"></i><i style="height: 40px"></i
+          ><i style="height: 26px"></i><i style="height: 12px"></i
+          ><i style="height: 34px"></i><i style="height: 48px"></i
+          ><i style="height: 22px"></i><i style="height: 16px"></i>
+        </div>
+        <div class="last">
+          <small>Last dictation · 2 min ago</small>আজ আবহাওয়া খুব সুন্দর। তুমি
+          কি আজ অফিসে যাবে?
+        </div>
+      </div>
+      <div class="card today">
+        <div class="row">
+          <span class="muted">Today</span><span class="link">This week ›</span>
+        </div>
+        <div class="pair">
+          <div><b>1,284</b><small>words</small></div>
+          <div>
+            <b>38<em>min</em></b
+            ><small>typing saved</small>
+          </div>
+          <div class="bars" title="Last 7 days">
+            <i style="height: 35%"></i><i style="height: 60%"></i
+            ><i style="height: 45%"></i><i style="height: 80%"></i
+            ><i style="height: 30%"></i><i style="height: 55%"></i
+            ><i class="now" style="height: 100%"></i>
+          </div>
+        </div>
+        <div class="model">
+          <span class="dot"></span>
+          <div>
+            Bangla FastConformer<small>On device · 0.04 s per sentence</small>
+          </div>
+          <span>Change</span>
+        </div>
+      </div>
+      <div class="card toggles">
+        <div class="muted" style="border: 0; padding-top: 0">
+          Quick settings
+        </div>
+        <div>বাংলা যতিচিহ্ন (Punctuation)<span class="sw"></span></div>
+        <div>Learn from my fixes<span class="sw"></span></div>
+        <div>Sound effects<span class="sw off"></span></div>
+        <div>Open at login<span class="sw"></span></div>
+        <div>Show recording pill<span class="sw"></span></div>
+      </div>
+    </div>
+  </body>
+</html>

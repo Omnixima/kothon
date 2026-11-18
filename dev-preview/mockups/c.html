@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kothon mockup C: Bengali editorial</title>
+    <style>
+      @import url("/node_modules/@fontsource-variable/noto-sans-bengali/index.css");
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        width: 880px;
+        height: 600px;
+        overflow: hidden;
+        position: relative;
+        font-family:
+          -apple-system, "Noto Sans Bengali Variable", system-ui, sans-serif;
+        background: #fbf6ee;
+        color: #2a1d12;
+      }
+      .wrap {
+        padding: 26px 34px 0;
+      }
+      .head {
+        display: flex;
+        align-items: flex-end;
+        gap: 16px;
+      }
+      .big {
+        font-size: 64px;
+        line-height: 1;
+        font-weight: 800;
+        color: #3f0159;
+        letter-spacing: -1px;
+      }
+      .sub {
+        font-size: 14px;
+        color: #8a7360;
+        padding-bottom: 8px;
+        line-height: 1.4;
+      }
+      .head img {
+        margin-left: auto;
+        width: 54px;
+        height: 54px;
+        border-radius: 15px;
+        transform: rotate(-6deg);
+        box-shadow: 6px 8px 0 #f2c94c;
+      }
+      .rule {
+        height: 2px;
+        background: #2a1d12;
+        margin: 18px 0 16px;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+      }
+      .tile {
+        border-radius: 20px;
+        padding: 16px 18px;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+      }
+      .t1 {
+        background: #3f0159;
+        color: #fff4dc;
+      }
+      .t2 {
+        background: #f2c94c;
+      }
+      .t3 {
+        background: #ffffff;
+        border: 2px solid #2a1d12;
+      }
+      .tile .lbl {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+      .tile .val {
+        font-size: 34px;
+        font-weight: 800;
+        margin-top: auto;
+        letter-spacing: -0.5px;
+      }
+      .tile .note {
+        font-size: 13px;
+        margin-top: 4px;
+        opacity: 0.8;
+      }
+      .quote {
+        margin-top: 16px;
+        display: flex;
+        gap: 16px;
+        align-items: stretch;
+      }
+      .q {
+        flex: 1;
+        background: white;
+        border-radius: 20px;
+        padding: 16px 20px;
+        border: 2px solid #2a1d12;
+        box-shadow: 6px 6px 0 #2a1d12;
+      }
+      .q .lbl {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: #8a7360;
+      }
+      .q p {
+        font-size: 20px;
+        line-height: 1.6;
+        margin-top: 6px;
+        font-weight: 500;
+      }
+      .side {
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .chip {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f1e7d8;
+        border-radius: 14px;
+        padding: 10px 14px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .chip span {
+        background: #3f0159;
+        color: white;
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      .chip span.off {
+        background: #c9b8a3;
+      }
+      .dock {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 4px;
+        padding: 6px;
+        background: #2a1d12;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px -10px rgba(42, 29, 18, 0.6);
+      }
+      .dock span {
+        color: #e9dcc6;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 8px 14px;
+        border-radius: 13px;
+      }
+      .dock .on {
+        background: #f2c94c;
+        color: #2a1d12;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <div class="big">কথন</div>
+        <div class="sub">
+          বাংলায় বলুন, যেকোনো অ্যাপে।<br />Speak Bangla, type anywhere. Fully
+          offline.
+        </div>
+        <img src="mouth.png" alt="" />
+      </div>
+      <div class="rule"></div>
+      <div class="cols">
+        <div class="tile t1">
+          <span class="lbl">Shortcut</span><span class="val">⌥ Space</span
+          ><span class="note">Hold to talk, release to type</span>
+        </div>
+        <div class="tile t2">
+          <span class="lbl">This week</span><span class="val">৬,৪২০ শব্দ</span
+          ><span class="note">≈ 3 hours of typing saved</span>
+        </div>
+        <div class="tile t3">
+          <span class="lbl">Model</span
+          ><span class="val" style="font-size: 22px">Bangla FastConformer</span
+          ><span class="note">9% WER · 0.04 s · on device</span>
+        </div>
+      </div>
+      <div class="quote">
+        <div class="q">
+          <span class="lbl">Last thing you said</span>
+          <p>আজ আবহাওয়া খুব সুন্দর। তুমি কি আজ অফিসে যাবে?</p>
+        </div>
+        <div class="side">
+          <div class="chip">যতিচিহ্ন<span>ON</span></div>
+          <div class="chip">Learn fixes<span>ON</span></div>
+          <div class="chip">Sounds<span class="off">OFF</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="dock">
+      <span class="on">হোম</span><span>ইতিহাস</span><span>মডেল</span
+      ><span>সেটিংস</span>
+    </div>
+  </body>
+</html>
