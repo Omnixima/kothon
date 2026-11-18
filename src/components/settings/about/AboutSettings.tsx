@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { getVersion } from "@tauri-apps/api/app";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { SettingsGroup } from "../../ui/SettingsGroup";
+import { BetaBadge, ISSUES_URL } from "../../shared/BetaBadge";
 import { SettingContainer } from "../../ui/SettingContainer";
 import { Button } from "../../ui/Button";
 import { AppDataDirectory } from "../AppDataDirectory";
@@ -47,8 +48,24 @@ export const AboutSettings: React.FC = () => {
           description={t("settings.about.version.description")}
           grouped={true}
         >
-          {/* eslint-disable-next-line i18next/no-literal-string */}
-          <span className="text-sm font-mono">v{version}</span>
+          <span className="flex items-center gap-2">
+            {/* eslint-disable-next-line i18next/no-literal-string */}
+            <span className="text-sm font-mono">v{version}</span>
+            <BetaBadge />
+          </span>
+        </SettingContainer>
+        <SettingContainer
+          title={t("beta.reportTitle")}
+          description={t("beta.reportDescription")}
+          grouped={true}
+        >
+          <button
+            type="button"
+            onClick={() => void openUrl(ISSUES_URL)}
+            className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold hover:border-logo-primary hover:text-logo-primary"
+          >
+            {t("beta.reportButton")}
+          </button>
         </SettingContainer>
 
         <ShowWhatsNewOnUpdate descriptionMode="tooltip" grouped={true} />

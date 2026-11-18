@@ -1135,5 +1135,13 @@
       "installing": "Installing…",
       "error": "Couldn't check"
     }
+  },
+  "beta": {
+    "label": "Beta",
+    "tooltip": "Kothon is in early access and may have bugs. Click to report one.",
+    "onboarding": "Early access: Kothon is new and may have rough edges. Tell us when something breaks.",
+    "reportTitle": "Report a Problem",
+    "reportDescription": "Kothon is in early access. Bug reports help a lot.",
+    "reportButton": "Open an issue"
   }
 }

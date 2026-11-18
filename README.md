@@ -15,6 +15,9 @@
   <a href="#build-from-source">Build from source</a>
 </p>
 
+> [!WARNING]
+> **Early access.** Kothon is new and still in active development, so expect rough edges and the occasional bug. Please [report anything that breaks](https://github.com/Omnixima/kothon/issues/new/choose). It helps a lot.
+
 <p align="center">
   <img src="docs/images/home.jpg" width="720" alt="Kothon home screen" />
 </p>

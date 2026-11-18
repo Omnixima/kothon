@@ -21,6 +21,7 @@ import {
 import { usePermissions } from "./usePermissions";
 import { useOnboardingModels } from "./useOnboardingModels";
 import { downloadPick } from "./downloadPick";
+import { BetaBadge } from "../shared/BetaBadge";
 
 interface KothonOnboardingProps {
   /** Debug preview: inert (no prompts, downloads or setting writes). */
@@ -173,7 +174,15 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
             </li>
           ))}
         </ol>
-        <VersionButton preview={preview} />
+        <div className="mt-auto flex flex-col gap-2">
+          <p className="text-[11px] leading-snug text-white/60">
+            {t("beta.onboarding")}
+          </p>
+          <div className="flex items-center gap-2">
+            <VersionButton preview={preview} />
+            <BetaBadge tone="light" />
+          </div>
+        </div>
       </aside>
 
       {/* The step itself. */}
@@ -587,7 +596,7 @@ const VersionButton: React.FC<{ preview: boolean }> = ({ preview }) => {
       type="button"
       onClick={() => void onClick()}
       title={label}
-      className={`mt-auto flex w-fit cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+      className={`flex w-fit cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
         state === "available"
           ? "bg-[#d8b4fe] text-[#2a0040]"
           : "bg-white/10 text-white/75 hover:bg-white/20"

@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Cog, FlaskConical, History, Info, Sparkles, Cpu } from "lucide-react";
 import HandyTextLogo from "./icons/HandyTextLogo";
+import { BetaBadge } from "./shared/BetaBadge";
 import HandyHand from "./icons/HandyHand";
 import HandyMascot from "./icons/HandyMascot";
 import { useSettings } from "../hooks/useSettings";
@@ -119,6 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <header className="flex items-center gap-3.5 px-6 pt-4 pb-2.5">
       <HandyMascot className="h-[34px] w-[34px]" />
       <HandyTextLogo height={30} />
+      <BetaBadge />
       <nav className="ms-auto flex gap-0.5 rounded-[14px] border border-logo-primary/10 bg-background/60 p-1 backdrop-blur-md">
         {TOP_TABS.map((tab) => {
           const active =
