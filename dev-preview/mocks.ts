@@ -4,6 +4,10 @@
 import { mockIPC, mockWindows } from "@tauri-apps/api/mocks";
 import settings from "./settings.json";
 
+// ?onboarding=1 shows first-run setup; ?model=whisper selects Whisper.
+const params = new URLSearchParams(location.search);
+if (params.get("onboarding")) settings.onboarding_completed = false;
+
 declare global {
   interface Window {
     __TAURI_OS_PLUGIN_INTERNALS__: Record<string, string>;
@@ -113,7 +117,8 @@ const answers: Record<string, unknown> = {
   is_recording: false,
   get_app_dir_path: "~/Library/Application Support/com.kothon.dictation",
   get_log_dir_path: "~/Library/Logs/com.kothon.dictation",
-  "plugin:app|version": "0.10.1",
+  "plugin:app|version": "0.1.0",
+  is_update_checks_locked: false,
   "plugin:app|name": "Kothon",
   "plugin:macos-permissions|check_accessibility_permission": true,
   "plugin:macos-permissions|check_microphone_permission": true,

@@ -175,7 +175,7 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
           ))}
         </ol>
         <div className="mt-auto flex flex-col gap-2">
-          <p className="text-[11px] leading-snug text-white/60">
+          <p data-beta className="text-[11px] leading-snug text-white/60">
             {t("beta.onboarding")}
           </p>
           <div className="flex items-center gap-2">

@@ -13,6 +13,7 @@ export const BetaBadge: React.FC<{ tone?: "brand" | "light" }> = ({
   return (
     <button
       type="button"
+      data-beta
       onClick={() => void openUrl(ISSUES_URL)}
       title={t("beta.tooltip")}
       className={`cursor-pointer rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
