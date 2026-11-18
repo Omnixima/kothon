@@ -19,7 +19,10 @@
 > **Early access.** Kothon is new and still in active development, so expect rough edges and the occasional bug. Please [report anything that breaks](https://github.com/Omnixima/kothon/issues/new/choose). It helps a lot.
 
 <p align="center">
-  <img src="docs/images/home.jpg" width="720" alt="Kothon home screen" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/01-home-dark.png" />
+    <img src="docs/images/01-home-light.png" width="720" alt="Kothon home screen" />
+  </picture>
 </p>
 
 ## Why Kothon
@@ -37,8 +40,14 @@ Most dictation tools treat Bengali as an afterthought. General-purpose Whisper m
 - **Private by design.** No cloud, no account, no telemetry. Turn history off entirely, or clear it any time.
 
 <p align="center">
-  <img src="docs/images/onboarding.jpg" width="360" alt="Choosing a model during setup" />
-  <img src="docs/images/history-dark.jpg" width="360" alt="History in dark mode" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/08-onboarding-model-dark.png" />
+    <img src="docs/images/08-onboarding-model-light.png" width="360" alt="Choosing a model during setup" />
+  </picture>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/02-history-dark.png" />
+    <img src="docs/images/02-history-light.png" width="360" alt="History of Bengali dictations" />
+  </picture>
 </p>
 
 ## Install
