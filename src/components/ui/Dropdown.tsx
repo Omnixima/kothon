@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 
 export interface DropdownOption {
@@ -39,12 +40,65 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  // Kothon: the menu is portaled to <body> with fixed coordinates, so frosted
+  // cards (backdrop-filter makes a stacking context) can't clip or cover it.
+  const [pos, setPos] = useState<{
+    left: number;
+    width: number;
+    top?: number;
+    bottom?: number;
+    maxHeight: number;
+  } | null>(null);
+
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const place = () => {
+      const r = triggerRef.current?.getBoundingClientRect();
+      if (!r) return;
+      const gap = 4;
+      const margin = 8;
+      const below = window.innerHeight - r.bottom - gap - margin;
+      const above = r.top - gap - margin;
+      const wanted = 240;
+      const up =
+        placement === "above"
+          ? above >= 120 || above > below
+          : below < Math.min(wanted, 160) && above > below;
+      // Keep a menu wider than its button inside the window.
+      const menuWidth = menuRef.current?.offsetWidth ?? r.width;
+      setPos({
+        left: Math.max(
+          margin,
+          Math.min(r.left, window.innerWidth - menuWidth - margin),
+        ),
+        width: r.width,
+        ...(up
+          ? { bottom: window.innerHeight - r.top + gap }
+          : { top: r.bottom + gap }),
+        maxHeight: Math.max(120, Math.min(wanted, up ? above : below)),
+      });
+    };
+    place();
+    // Once more after the menu has rendered and has a width.
+    const frame = requestAnimationFrame(place);
+    window.addEventListener("resize", place);
+    // Capture scrolls of any ancestor, not just the window.
+    window.addEventListener("scroll", place, true);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [isOpen, placement]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(target) &&
+        !menuRef.current?.contains(target)
       ) {
         setIsOpen(false);
       }
@@ -114,67 +168,82 @@ export const Dropdown: React.FC<DropdownProps> = ({
           />
         </svg>
       </button>
-      {isOpen && !disabled && (
-        <div
-          className={`absolute ${placement === "above" ? "bottom-full mb-1" : "top-full mt-1"} bg-background border border-line rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto p-1 ${
-            menuClassName ?? "left-0 right-0"
-          }`}
-        >
-          {options.length === 0 ? (
-            <div className="px-2 py-1.5 text-sm text-ink-3">
-              {t("common.noOptionsFound")}
-            </div>
-          ) : (
-            options.map((option) => {
-              const isChosen = selectedValue === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`flex w-full items-center gap-2 rounded-md px-2 text-sm text-start transition-colors duration-150 ${
-                    option.description ? "py-2" : "py-1.5"
-                  } ${isChosen ? chosen : "hover:bg-wash"} ${
-                    option.disabled ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  onClick={() => handleSelect(option.value)}
-                  disabled={option.disabled}
-                >
-                  <span className="min-w-0 flex-1">
-                    <span
-                      className={`block whitespace-normal break-words ${
-                        isChosen ? "font-semibold" : ""
-                      }`}
-                    >
-                      {option.label}
-                    </span>
-                    {option.description && (
-                      <span className="mt-0.5 block whitespace-normal text-xs font-normal leading-snug text-ink-3">
-                        {option.description}
+      {isOpen &&
+        !disabled &&
+        pos &&
+        createPortal(
+          <div
+            ref={menuRef}
+            onKeyDown={handleKeyDown}
+            style={{
+              position: "fixed",
+              left: pos.left,
+              top: pos.top,
+              bottom: pos.bottom,
+              minWidth: pos.width,
+              width: menuClassName ? undefined : pos.width,
+              maxHeight: pos.maxHeight,
+            }}
+            className={`bg-background border border-line rounded-xl shadow-xl z-[1000] overflow-y-auto p-1 ${
+              menuClassName ?? ""
+            }`}
+          >
+            {options.length === 0 ? (
+              <div className="px-2 py-1.5 text-sm text-ink-3">
+                {t("common.noOptionsFound")}
+              </div>
+            ) : (
+              options.map((option) => {
+                const isChosen = selectedValue === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className={`flex w-full items-center gap-2 rounded-md px-2 text-sm text-start transition-colors duration-150 ${
+                      option.description ? "py-2" : "py-1.5"
+                    } ${isChosen ? chosen : "hover:bg-wash"} ${
+                      option.disabled ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    onClick={() => handleSelect(option.value)}
+                    disabled={option.disabled}
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className={`block whitespace-normal break-words ${
+                          isChosen ? "font-semibold" : ""
+                        }`}
+                      >
+                        {option.label}
                       </span>
+                      {option.description && (
+                        <span className="mt-0.5 block whitespace-normal text-xs font-normal leading-snug text-ink-3">
+                          {option.description}
+                        </span>
+                      )}
+                    </span>
+                    {isChosen && (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2.2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                        className="shrink-0 text-ink-2"
+                      >
+                        <path d="M5 12.5l4.5 4.5L19 7.5" />
+                      </svg>
                     )}
-                  </span>
-                  {isChosen && (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                      className="shrink-0 text-ink-2"
-                    >
-                      <path d="M5 12.5l4.5 4.5L19 7.5" />
-                    </svg>
-                  )}
-                </button>
-              );
-            })
-          )}
-        </div>
-      )}
+                  </button>
+                );
+              })
+            )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

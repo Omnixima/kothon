@@ -303,3 +303,13 @@
   background: color-mix(in srgb, var(--color-logo-primary) 40%, #3f0159);
   box-shadow: 0 4px 12px -4px rgba(63, 1, 89, 0.6);
 }
+/* A card with an open menu or popover sits above the cards after it, since
+   each frosted card is its own stacking context (backdrop-filter). Menus
+   built on Dropdown are also portaled to <body>. */
+.glass-card {
+  position: relative;
+}
+.glass-card:has([aria-expanded="true"]),
+.glass-card:focus-within {
+  z-index: 30;
+}
