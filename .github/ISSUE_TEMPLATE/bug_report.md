@@ -17,7 +17,7 @@ labels: bug
 **Setup**
 
 - Kothon version (Settings › About):
-- macOS version and Mac model:
+- Computer and OS version (e.g. MacBook Air M2, macOS 26.1 / Windows 11 / Ubuntu 24.04):
 - Model in use (FastConformer / Whisper Medium / other):
 
 **Logs** (Settings › About › Log directory, attach the latest `.log` if you can)

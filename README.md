@@ -5,7 +5,7 @@
 <h1 align="center">কথন · Kothon</h1>
 
 <p align="center">
-  <b>Offline Bengali dictation for macOS.</b><br/>
+  <b>Offline Bengali dictation for macOS, with Windows and Linux on the way.</b><br/>
   বাংলায় বলুন, যেকোনো অ্যাপে। Hold a shortcut, speak Bangla, and Kothon types it wherever your cursor is.
 </p>
 
@@ -27,7 +27,7 @@
 
 ## Why Kothon
 
-Most dictation tools treat Bengali as an afterthought. General-purpose Whisper models get about half the words wrong. Kothon is built around Bengali from the ground up, and everything runs on your Mac:
+Most dictation tools treat Bengali as an afterthought. General-purpose Whisper models get about half the words wrong. Kothon is built around Bengali from the ground up, and everything runs on your own computer:
 
 - **Accurate Bengali speech recognition.** Two tuned models, chosen after testing on the FLEURS Bengali benchmark:
   - **Bangla FastConformer** (fast): about 9% word error, around 0.04 s for a sentence on Apple Silicon.
@@ -52,6 +52,14 @@ Most dictation tools treat Bengali as an afterthought. General-purpose Whisper m
 
 ## Install
 
+| Platform                   | Status                   | Download                                                            |
+| -------------------------- | ------------------------ | ------------------------------------------------------------------- |
+| macOS (Apple Silicon)      | Available (early access) | `.dmg` from [Releases](https://github.com/Omnixima/kothon/releases) |
+| Windows 10 and 11 (64-bit) | Coming soon, in testing  | Not released yet                                                    |
+| Linux (Ubuntu, Debian)     | Coming soon, in testing  | Not released yet                                                    |
+
+### macOS
+
 Download the latest signed, notarized `.dmg` from [Releases](https://github.com/Omnixima/kothon/releases), drag Kothon to Applications, and open it. The setup wizard does the rest:
 
 1. Choose your languages. Bengali is always on, and you can add English.
@@ -61,6 +69,10 @@ Download the latest signed, notarized `.dmg` from [Releases](https://github.com/
 
 You'll need macOS on Apple Silicon. Intel Macs work too, but run on the CPU only.
 
+### Windows and Linux
+
+Builds for Windows (installer) and Linux (`.deb`) are being tested and will appear on [Releases](https://github.com/Omnixima/kothon/releases) when they're ready. They use the same models and setup, with <kbd>Ctrl</kbd> <kbd>Space</kbd> as the default shortcut. Kothon uses the GPU through Vulkan when your driver supports it, and the CPU otherwise.
+
 ## Models
 
 | Model                                                                                               | Size   | Bengali WER                     | Source                                         |
@@ -69,11 +81,11 @@ You'll need macOS on Apple Silicon. Intel Macs work too, but run on the CPU only
 | [BengaliAI Whisper Medium](https://huggingface.co/omnixima/bengaliai-whisper-medium-gguf)           | 831 MB | 8.2% (7.1% with number cleanup) | Erdene-Ochir Tuguldur / Bengali.AI, Apache-2.0 |
 | [Bangla punctuation (MuRIL)](https://huggingface.co/omnixima/bangla-punctuation-muril6)             | 122 MB | n/a                             | Tuguldur, packaged by SayedShaun, Apache-2.0   |
 
-WER was measured on 200 FLEURS bn_in test clips with punctuation removed. All models run through [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) (GGUF, Metal).
+WER was measured on 200 FLEURS bn_in test clips with punctuation removed. All models run through [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) (GGUF; Metal on Mac, Vulkan or CPU on Windows and Linux).
 
 ## Build from source
 
-You'll need Rust, [Bun](https://bun.sh), Xcode Command Line Tools and CMake.
+You'll need Rust, [Bun](https://bun.sh) and CMake, plus Xcode Command Line Tools on a Mac. Windows and Linux need a few more packages; see [BUILD.md](BUILD.md).
 
 ```bash
 git clone https://github.com/Omnixima/kothon.git
@@ -89,19 +101,19 @@ To make a release build, run `bun run tauri build`. See [BUILD.md](BUILD.md) for
 
 Useful scripts:
 
-- `scripts/kothon/make-icons.sh` regenerates every app and menu bar icon from the design files.
+- `scripts/kothon/make-icons.sh` regenerates every app and tray icon from the design files.
 - `src-tauri/examples/kothon_bench.rs` times the Bengali models through the app's engine.
 - `dev-preview/` renders the interface in a browser with a simulated backend, for design work.
 
 ## Troubleshooting
 
-- **The shortcut stopped working.** Another app may have turned on macOS Secure Input (password managers and some terminals do). Kothon shows a warning when this happens. Close or unfocus that app's password field.
-- **Nothing gets typed.** Check System Settings › Privacy & Security › Accessibility and make sure Kothon is on. After reinstalling, toggle it off and on again.
+- **The shortcut stopped working (Mac).** Another app may have turned on macOS Secure Input (password managers and some terminals do). Kothon shows a warning when this happens. Close or unfocus that app's password field.
+- **Nothing gets typed (Mac).** Check System Settings › Privacy & Security › Accessibility and make sure Kothon is on. After reinstalling, toggle it off and on again.
 - **A word keeps coming out wrong.** Fix it once in History (the pencil icon). Kothon learns the correction.
 
 ## Privacy
 
-Audio is captured only while you hold or toggle the shortcut. It's transcribed on your Mac and never uploaded. Kothon only goes online to download the models you choose. History is stored locally, and you can switch it off or clear it in Settings.
+Audio is captured only while you hold or toggle the shortcut. It's transcribed on your computer and never uploaded. Kothon only goes online to download the models you choose. History is stored locally, and you can switch it off or clear it in Settings.
 
 ## Credits
 

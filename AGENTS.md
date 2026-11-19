@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for AI coding assistants working on Kothon, an offline Bengali dictation app for macOS (Tauri 2: Rust backend, React/TypeScript frontend). Kothon is a fork of Handy; Kothon-specific code lives in `src-tauri/src/kothon*.rs`, `src/components/home`, `src/components/onboarding/KothonOnboarding.tsx`, `src/lib/models/kothonCatalog.ts` and `scripts/kothon`.
+Guidance for AI coding assistants working on Kothon, an offline Bengali dictation app for macOS, with Windows and Linux builds in testing (Tauri 2: Rust backend, React/TypeScript frontend). Kothon is a fork of Handy; Kothon-specific code lives in `src-tauri/src/kothon*.rs`, `src/components/home`, `src/components/onboarding/KothonOnboarding.tsx`, `src/lib/models/kothonCatalog.ts` and `scripts/kothon`.
 
 ## Development Commands
 

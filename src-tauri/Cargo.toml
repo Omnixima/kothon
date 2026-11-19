@@ -1,7 +1,7 @@
 [package]
 name = "kothon"
 version = "0.1.0"
-description = "Kothon: offline Bengali dictation for macOS"
+description = "Kothon: offline Bengali dictation"
 authors = ["Omnixima", "CJ Pais (Handy)"]
 edition = "2021"
 license = "MIT"

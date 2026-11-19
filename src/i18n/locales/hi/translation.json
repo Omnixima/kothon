@@ -1073,6 +1073,7 @@
     "tagline": "বলুন, কথন লিখে দিবে।",
     "taglineSub": "Speak Bangla in any app. Kothon types it for you, right on your Mac.",
     "taglineSub_windows": "Speak Bangla in any app. Kothon types it for you, right on your PC.",
+    "taglineSub_linux": "Speak Bangla in any app. Kothon types it for you, right on your computer.",
     "private": "Everything stays on this Mac. No cloud, no account.",
     "steps": {
       "language": "ভাষা · Language",

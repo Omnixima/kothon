@@ -53,8 +53,9 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
   const { settings, updateSetting } = useSettings();
   const permissions = usePermissions(preview);
   const osType = useOsType();
-  // Windows wording ("this PC") for the few lines that name the computer.
-  const osContext = osType === "windows" ? "windows" : undefined;
+  // Windows and Linux wording for the few lines that name the computer.
+  const osContext =
+    osType === "windows" || osType === "linux" ? osType : undefined;
   const [english, setEnglish] = useState(
     store.languages.some((l) => l.startsWith("en")),
   );
