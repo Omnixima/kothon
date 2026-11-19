@@ -53,6 +53,8 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
   const { settings, updateSetting } = useSettings();
   const permissions = usePermissions(preview);
   const osType = useOsType();
+  // Windows wording ("this PC") for the few lines that name the computer.
+  const osContext = osType === "windows" ? "windows" : undefined;
   const [english, setEnglish] = useState(
     store.languages.some((l) => l.startsWith("en")),
   );
@@ -149,7 +151,7 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
           {t("kothonOnboarding.tagline")}
         </p>
         <p className="mt-2 text-sm text-white/70">
-          {t("kothonOnboarding.taglineSub")}
+          {t("kothonOnboarding.taglineSub", { context: osContext })}
         </p>
         <ol className="mt-8 flex flex-col gap-1">
           {STEPS.map((s, i) => (
@@ -277,16 +279,20 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
             <>
               <Eyebrow>{t("kothonOnboarding.permissions.eyebrow")}</Eyebrow>
               <h1 className="mt-2 text-[26px] font-bold leading-tight">
-                {t("kothonOnboarding.permissions.title")}
+                {t("kothonOnboarding.permissions.title", {
+                  context: osContext,
+                })}
               </h1>
               <p className="mt-2 text-sm text-ink-2">
-                {t("kothonOnboarding.permissions.body")}
+                {t("kothonOnboarding.permissions.body", { context: osContext })}
               </p>
               <div className="mt-6 flex flex-col gap-3">
                 <Permission
                   icon={<Mic width={18} height={18} />}
                   title={t("kothonOnboarding.permissions.mic")}
-                  body={t("kothonOnboarding.permissions.micWhy")}
+                  body={t("kothonOnboarding.permissions.micWhy", {
+                    context: osContext,
+                  })}
                   status={permissions.microphone}
                   onAllow={permissions.requestMicrophone}
                 />
@@ -325,8 +331,8 @@ export const KothonOnboarding: React.FC<KothonOnboardingProps> = ({
                     title={k}
                     className="inline-flex min-w-9 items-center justify-center gap-1.5 rounded-[9px] border border-b-[3px] border-line-strong bg-background px-2.5 py-1 font-sans text-base font-semibold text-text"
                   >
-                    {keySymbol(k)}
-                    {keyNeedsLabel(k) && (
+                    {keySymbol(k, osType)}
+                    {keyNeedsLabel(k, osType) && (
                       <span className="text-xs font-medium text-ink-2">
                         {k}
                       </span>

@@ -104,8 +104,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 title={key}
                 className="inline-flex min-w-9 items-center justify-center gap-1.5 rounded-[9px] border border-b-[3px] border-white/25 bg-white/15 px-2.5 py-1 font-sans text-base font-semibold"
               >
-                {keySymbol(key)}
-                {keyNeedsLabel(key) && (
+                {keySymbol(key, osType)}
+                {keyNeedsLabel(key, osType) && (
                   <span className="text-xs font-medium opacity-80">{key}</span>
                 )}
               </kbd>

@@ -1072,6 +1072,7 @@
   "kothonOnboarding": {
     "tagline": "বলুন, কথন লিখে দিবে।",
     "taglineSub": "Speak Bangla in any app. Kothon types it for you, right on your Mac.",
+    "taglineSub_windows": "Speak Bangla in any app. Kothon types it for you, right on your PC.",
     "private": "Everything stays on this Mac. No cloud, no account.",
     "steps": {
       "language": "ভাষা · Language",
@@ -1101,9 +1102,12 @@
     "permissions": {
       "eyebrow": "Access",
       "title": "Two quick permissions",
+      "title_windows": "One quick permission",
       "body": "macOS asks once. Kothon never uploads your voice.",
+      "body_windows": "Windows asks once. Kothon never uploads your voice.",
       "mic": "Microphone",
       "micWhy": "So Kothon can hear you. Audio is turned into text on this Mac.",
+      "micWhy_windows": "So Kothon can hear you. Audio is turned into text on this PC.",
       "accessibility": "Accessibility",
       "accessibilityWhy": "So your shortcut works in every app and Kothon can type where your cursor is.",
       "allow": "Allow",

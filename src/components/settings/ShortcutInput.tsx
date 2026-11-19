@@ -123,7 +123,7 @@ export const ShortcutInput: React.FC<ShortcutInputProps> = ({
             className="flex cursor-pointer items-center gap-1 rounded-lg p-0.5 hover:bg-logo-primary/10"
             onClick={start}
           >
-            {/* Kothon: one keycap per key, as Mac symbols. */}
+            {/* Kothon: one keycap per key: Mac symbols, or key names on Windows. */}
             {formatKeyCombination(binding.current_binding, osType)
               .split(" + ")
               .map((key) => (
@@ -131,8 +131,8 @@ export const ShortcutInput: React.FC<ShortcutInputProps> = ({
                   key={key}
                   className="inline-flex min-w-8 items-center justify-center gap-1 rounded-[8px] border border-b-[3px] border-line-strong bg-background px-2 py-0.5 font-sans text-[15px] font-semibold text-text"
                 >
-                  {keySymbol(key)}
-                  {keyNeedsLabel(key) && (
+                  {keySymbol(key, osType)}
+                  {keyNeedsLabel(key, osType) && (
                     <span className="text-[11px] font-medium text-ink-2">
                       {key}
                     </span>

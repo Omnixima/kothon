@@ -1,0 +1,310 @@
+name: "Windows build"
+
+# Builds the Kothon installer for 64-bit Windows (NSIS .exe).
+#
+# - Every push to main builds a test installer, kept as a workflow artifact
+#   ("kothon-windows-x64") for 30 days.
+# - Run it by hand (Actions → Windows build → Run workflow) for the same, or
+#   give it a release tag (v0.2.0) to also attach the installer to that GitHub
+#   release and add Windows to the release's updater feed (latest.json).
+#   Only do that after the installer has been tested.
+#
+# Code signing goes through SignPath (free for open source). It is off until
+# the repository variable SIGNPATH_ORGANIZATION_ID and the secret
+# SIGNPATH_API_TOKEN exist; until then the installer is unsigned and Windows
+# SmartScreen warns on first run. See docs/windows.md.
+#
+# Updater signatures need the secret TAURI_SIGNING_PRIVATE_KEY (the contents of
+# ~/.tauri/kothon-updater.key). Without it the build still makes an installer,
+# just no .sig, so it can't be published to the updater feed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-tag:
+        description: "Release tag to publish the tested installer to (e.g. v0.2.0). Leave empty for a test build."
+        required: false
+        default: ""
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "src-tauri/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/windows.yml"
+
+concurrency:
+  group: windows-${{ github.ref }}-${{ inputs.release-tag }}
+  cancel-in-progress: true
+
+env:
+  SIGNPATH_ENABLED: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+  SIGNPATH_PROJECT: ${{ vars.SIGNPATH_PROJECT_SLUG || 'kothon' }}
+  SIGNPATH_POLICY: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG || 'release-signing' }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Enable long paths
+        shell: pwsh
+        run: |
+          New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+            -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+          git config --system core.longpaths true
+
+      - uses: actions/checkout@v5
+
+      - name: Read version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(grep -o '"version": "[^"]*"' src-tauri/tauri.conf.json | head -1 | cut -d'"' -f4)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Kothon $VERSION"
+          if [ -n "${{ inputs.release-tag }}" ] && [ "${{ inputs.release-tag }}" != "v$VERSION" ]; then
+            echo "::error::release-tag ${{ inputs.release-tag }} doesn't match the app version v$VERSION in tauri.conf.json"
+            exit 1
+          fi
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+          key: windows-x64-v1
+          cache-bin: false
+
+      # transcribe-cpp's Vulkan GPU backend (src-tauri/Cargo.toml, x86_64
+      # Windows) needs the Vulkan SDK and SPIRV-Headers at build time. Users
+      # need nothing extra: Vulkan ships with every GPU driver, and the CPU
+      # backend is the fallback.
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@v1.2
+        with:
+          version: 1.4.309.0
+          cache: true
+
+      - name: Install SPIRV-Headers
+        shell: pwsh
+        run: |
+          vcpkg install spirv-headers:x64-windows
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install spirv-headers failed" }
+          $prefix = "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows" -replace '\\','/'
+          $combined = if ($env:CMAKE_PREFIX_PATH) { "$prefix;$env:CMAKE_PREFIX_PATH" } else { $prefix }
+          Add-Content $env:GITHUB_ENV "CMAKE_PREFIX_PATH=$combined"
+
+      # Ship the VC++ runtime next to kothon.exe so Kothon starts on PCs
+      # without Microsoft's redistributable. build.rs copies the DLLs from
+      # these folders into src-tauri/transcribe-libs/.
+      - name: Locate VC++ runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsRoot = & $vswhere -latest -products * -property installationPath
+          $redistVersion = (Get-Content (Join-Path $vsRoot "VC\Auxiliary\Build\Microsoft.VCRedistVersion.default.txt")).Trim()
+          $archDir = Join-Path $vsRoot "VC\Redist\MSVC\$redistVersion\x64"
+          $crt = Get-ChildItem $archDir -Directory -Filter "Microsoft.VC*.CRT" | Sort-Object Name | Select-Object -Last 1
+          $omp = Get-ChildItem $archDir -Directory -Filter "Microsoft.VC*.OpenMP" | Sort-Object Name | Select-Object -Last 1
+          if (-not $crt -or -not $omp) { throw "VC++ redist not found under $archDir" }
+          Add-Content -Path $env:GITHUB_ENV -Value "HANDY_VC_REDIST_DIRS=$($crt.FullName);$($omp.FullName)"
+
+      - name: Install frontend dependencies
+        run: bun install
+
+      # Updater signatures only when the key is set (see the header).
+      - name: Updater key
+        shell: bash
+        env:
+          KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [ -n "$KEY" ]; then
+            echo "TAURI_ARGS=" >> "$GITHUB_ENV"
+          else
+            echo "::warning::TAURI_SIGNING_PRIVATE_KEY isn't set: building without updater signatures."
+            echo 'TAURI_ARGS=--config {"bundle":{"createUpdaterArtifacts":false}}' >> "$GITHUB_ENV"
+          fi
+
+      # ---- Unsigned build (no SignPath yet) ----
+      - name: Build installer
+        if: env.SIGNPATH_ENABLED != 'true'
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        run: bun run tauri build --bundles nsis $TAURI_ARGS
+
+      # ---- Signed build: sign the app, bundle it, then sign the installer ----
+      - name: Build app (to be signed)
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: bash
+        run: bun run tauri build --no-bundle
+
+      - name: Collect binaries to sign
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force to-sign | Out-Null
+          Copy-Item src-tauri/target/release/kothon.exe to-sign/
+          # Our own DLLs; Microsoft's VC++ runtime is already signed.
+          Get-ChildItem src-tauri/transcribe-libs -Filter *.dll |
+            Where-Object { $_.Name -notmatch '^(msvcp|vcruntime|vcomp|concrt)' } |
+            Copy-Item -Destination to-sign/
+
+      - name: Upload binaries to sign
+        if: env.SIGNPATH_ENABLED == 'true'
+        id: upload-binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: kothon-binaries-unsigned
+          path: to-sign/*
+          retention-days: 1
+
+      - name: Sign binaries (SignPath)
+        if: env.SIGNPATH_ENABLED == 'true'
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ env.SIGNPATH_PROJECT }}
+          signing-policy-slug: ${{ env.SIGNPATH_POLICY }}
+          artifact-configuration-slug: binaries
+          github-artifact-id: ${{ steps.upload-binaries.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-binaries
+
+      - name: Bundle the signed app
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: bash
+        run: |
+          cp -f signed-binaries/kothon.exe src-tauri/target/release/kothon.exe
+          cp -f signed-binaries/*.dll src-tauri/transcribe-libs/ 2>/dev/null || true
+          # No updater artifacts yet: they must be made from the signed installer.
+          bun run tauri bundle --bundles nsis --config '{"bundle":{"createUpdaterArtifacts":false}}'
+
+      - name: Upload installer to sign
+        if: env.SIGNPATH_ENABLED == 'true'
+        id: upload-installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: kothon-installer-unsigned
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          retention-days: 1
+
+      - name: Sign installer (SignPath)
+        if: env.SIGNPATH_ENABLED == 'true'
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ env.SIGNPATH_PROJECT }}
+          signing-policy-slug: ${{ env.SIGNPATH_POLICY }}
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-installer
+
+      - name: Updater signature for the signed installer
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        run: |
+          cp signed-installer/*.exe src-tauri/target/release/bundle/nsis/
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            for f in src-tauri/target/release/bundle/nsis/*.exe; do bunx tauri signer sign "$f"; done
+          fi
+
+      # ---- Checks: the installer holds every DLL and the app starts ----
+      - name: Check the installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $staged = Get-ChildItem src-tauri/transcribe-libs -Filter *.dll
+          foreach ($name in @("msvcp140.dll", "vcruntime140.dll", "vcomp140.dll")) {
+            if (-not ($staged | Where-Object { $_.Name -ieq $name })) { throw "VC++ runtime $name wasn't staged" }
+          }
+          if (-not ($staged | Where-Object { $_.Name -like "*transcribe*" })) { throw "transcribe DLLs weren't staged" }
+          if (-not ($staged | Where-Object { $_.Name -like "*ggml*" })) { throw "ggml DLLs weren't staged" }
+
+          $installer = Get-ChildItem src-tauri/target/release/bundle/nsis -Filter *.exe | Select-Object -First 1
+          if (-not $installer) { throw "No installer was built" }
+          $dir = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid())
+          New-Item -ItemType Directory $dir | Out-Null
+          $p = Start-Process $installer.FullName -ArgumentList @("/S", "/PORTABLE", "/D=$dir") -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Silent install failed ($($p.ExitCode))" }
+          foreach ($dll in $staged) {
+            if (-not (Get-ChildItem $dir -Filter $dll.Name -Recurse)) { throw "Installer is missing $($dll.Name)" }
+          }
+          $exe = Get-ChildItem $dir -Filter kothon.exe -Recurse | Select-Object -First 1
+          if (-not $exe) { throw "Installer is missing kothon.exe" }
+          $out = (& $exe.FullName --list-devices | Out-String)
+          $out | Write-Host
+          if ($LASTEXITCODE -ne 0) { throw "kothon.exe --list-devices failed" }
+          if ($out -notmatch "kind=cpu") { throw "No CPU compute device found" }
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: kothon-windows-x64
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/nsis/*.exe.sig
+          retention-days: 30
+
+  publish:
+    if: inputs.release-tag != ''
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TAG: ${{ inputs.release-tag }}
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kothon-windows-x64
+          path: win
+
+      # Attach the installer to the release the Mac script made, and add
+      # Windows to that release's latest.json without touching the Mac entry.
+      - name: Publish to ${{ inputs.release-tag }}
+        run: |
+          set -euo pipefail
+          EXE=$(ls win/*.exe | head -1)
+          [ -f "$EXE.sig" ] || { echo "::error::No updater signature: set the TAURI_SIGNING_PRIVATE_KEY secret and rebuild"; exit 1; }
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" -p latest.json -D feed || true
+          python3 - "$EXE" "$TAG" "$VERSION" "$GITHUB_REPOSITORY" <<'PY'
+          import datetime, json, os, pathlib, sys
+          exe, tag, version, repo = sys.argv[1:]
+          feed_path = pathlib.Path("feed/latest.json")
+          feed = json.loads(feed_path.read_text()) if feed_path.exists() else {
+              "version": version,
+              "notes": f"Kothon {version}",
+              "pub_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "platforms": {},
+          }
+          if feed["version"] != version:
+              sys.exit(f"latest.json on {tag} is for {feed['version']}, this build is {version}")
+          name = os.path.basename(exe)
+          feed["platforms"]["windows-x86_64"] = {
+              "signature": pathlib.Path(exe + ".sig").read_text().strip(),
+              "url": f"https://github.com/{repo}/releases/download/{tag}/{name}",
+          }
+          pathlib.Path("latest.json").write_text(json.dumps(feed, indent=2) + "\n")
+          print(json.dumps(feed, indent=2))
+          PY
+          gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber "$EXE" "$EXE.sig" latest.json

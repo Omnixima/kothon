@@ -4,9 +4,21 @@
 import { mockIPC, mockWindows } from "@tauri-apps/api/mocks";
 import settings from "./settings.json";
 
-// ?onboarding=1 shows first-run setup; ?model=whisper selects Whisper.
+// ?onboarding=1 shows first-run setup; ?model=whisper selects Whisper;
+// ?os=windows shows the app as it looks on Windows.
 const params = new URLSearchParams(location.search);
 if (params.get("onboarding")) settings.onboarding_completed = false;
+const windows = params.get("os") === "windows";
+if (windows) {
+  const keys = settings.bindings as Record<
+    string,
+    { current_binding: string; default_binding: string }
+  >;
+  for (const b of Object.values(keys)) {
+    b.current_binding = b.current_binding.replace("option", "ctrl");
+    b.default_binding = b.default_binding.replace("option", "ctrl");
+  }
+}
 
 declare global {
   interface Window {
@@ -14,15 +26,25 @@ declare global {
   }
 }
 
-window.__TAURI_OS_PLUGIN_INTERNALS__ = {
-  platform: "macos",
-  version: "26.2",
-  family: "unix",
-  os_type: "macos",
-  arch: "aarch64",
-  exe_extension: "",
-  eol: "\n",
-};
+window.__TAURI_OS_PLUGIN_INTERNALS__ = windows
+  ? {
+      platform: "windows",
+      version: "10.0.26100",
+      family: "windows",
+      os_type: "windows",
+      arch: "x86_64",
+      exe_extension: "exe",
+      eol: "\r\n",
+    }
+  : {
+      platform: "macos",
+      version: "26.2",
+      family: "unix",
+      os_type: "macos",
+      arch: "aarch64",
+      exe_extension: "",
+      eol: "\n",
+    };
 mockWindows("main");
 
 const model = (
@@ -123,6 +145,10 @@ const answers: Record<string, unknown> = {
   "plugin:macos-permissions|check_accessibility_permission": true,
   "plugin:macos-permissions|check_microphone_permission": true,
   "plugin:autostart|is_enabled": false,
+  get_windows_microphone_permission_status: {
+    supported: true,
+    overall_access: "allowed",
+  },
 };
 
 mockIPC((cmd) => {
