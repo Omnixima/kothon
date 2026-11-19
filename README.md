@@ -5,7 +5,7 @@
 <h1 align="center">কথন · Kothon</h1>
 
 <p align="center">
-  <b>Offline Bengali dictation for macOS, with Windows and Linux on the way.</b><br/>
+  <b>Offline Bengali dictation for macOS, with Windows and Linux.</b><br/>
   বাংলায় বলুন, যেকোনো অ্যাপে। Hold a shortcut, speak Bangla, and Kothon types it wherever your cursor is.
 </p>
 
