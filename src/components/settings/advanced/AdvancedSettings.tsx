@@ -15,6 +15,7 @@ import { AppendTrailingSpace } from "../AppendTrailingSpace";
 import { HistoryLimit } from "../HistoryLimit";
 import { RecordingRetentionPeriodSelector } from "../RecordingRetentionPeriod";
 import { ExperimentalToggle } from "../ExperimentalToggle";
+import { PostProcessingToggle } from "../PostProcessingToggle";
 import { useSettings } from "../../../hooks/useSettings";
 import { KeyboardImplementationSelector } from "../debug/KeyboardImplementationSelector";
 import { VoiceActivityDetection } from "../VoiceActivityDetection";
@@ -86,8 +87,11 @@ export const AdvancedSettings: React.FC = () => {
 
       {experimentalEnabled && (
         <SettingsGroup title={t("settings.advanced.groups.experimental")}>
-          {/* Kothon: Handy's AI post-processing stays hidden until it's tested
-              with Bengali. Its code and settings are untouched. */}
+          {/* Kothon: Handy's AI post-processing shows only in dev builds
+              (`bun run tauri dev`) until it's tested with Bengali. */}
+          {import.meta.env.DEV && (
+            <PostProcessingToggle descriptionMode="tooltip" grouped={true} />
+          )}
           <KeyboardImplementationSelector
             descriptionMode="tooltip"
             grouped={true}
