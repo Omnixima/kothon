@@ -6,7 +6,7 @@ import { SettingsGroup } from "../../ui/SettingsGroup";
 import { BetaBadge, ISSUES_URL } from "../../shared/BetaBadge";
 import { SettingContainer } from "../../ui/SettingContainer";
 import { Button } from "../../ui/Button";
-import mark from "../../../assets/kothon-mark.png";
+import wordmark from "../../../assets/kothon-wordmark.png";
 
 type LinkKey = "website" | "code" | "models" | "privacy" | "report";
 
@@ -124,18 +124,32 @@ export const AboutSettings: React.FC = () => {
   return (
     <div className="max-w-3xl w-full mx-auto space-y-6">
       {/* Who makes Kothon: the mark, the version, and Omnixima's few words. */}
-      <div className="flex items-start gap-4 px-4">
-        <img src={mark} alt="" className="size-14 shrink-0 rounded-2xl" />
+      <div className="px-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold">
-              {t("settings.about.omnixima.appName")}
-            </h1>
-            {/* eslint-disable-next-line i18next/no-literal-string */}
-            <span className="text-sm font-mono text-ink-3">v{version}</span>
-            <BetaBadge />
+          <div className="flex items-end gap-3">
+            {/* The কথন wordmark in the brand purple, as in onboarding. */}
+            <span
+              role="img"
+              aria-label={t("settings.about.omnixima.appName")}
+              className="block h-12 w-[126px] bg-logo-primary"
+              style={{
+                maskImage: `url(${wordmark})`,
+                WebkitMaskImage: `url(${wordmark})`,
+                maskSize: "contain",
+                WebkitMaskSize: "contain",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat",
+                maskPosition: "left bottom",
+                WebkitMaskPosition: "left bottom",
+              }}
+            />
+            <span className="mb-1 flex items-center gap-2">
+              {/* eslint-disable-next-line i18next/no-literal-string */}
+              <span className="text-sm font-mono text-ink-3">v{version}</span>
+              <BetaBadge />
+            </span>
           </div>
-          <p className="text-sm font-medium text-logo-primary">
+          <p className="mt-1 text-sm font-medium text-logo-primary">
             {t("settings.about.omnixima.by")}
           </p>
           <p className="mt-3 text-sm leading-relaxed">
