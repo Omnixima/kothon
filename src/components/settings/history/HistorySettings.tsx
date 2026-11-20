@@ -671,6 +671,20 @@ const HistoryEntryComponent: React.FC<HistoryEntryProps> = ({
           {learnedNote && (
             <p className="text-xs font-medium text-moss">{learnedNote}</p>
           )}
+          {/* Kothon: what AI post-processing pasted instead, so it can be checked. */}
+          {!retrying && entry.post_processed_text != null && (
+            <div className="mt-1 w-full rounded-lg border border-line bg-wash px-3 py-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-logo-primary">
+                {entry.post_processed_text.trim() ===
+                entry.transcription_text.trim()
+                  ? t("settings.history.postProcessedSame")
+                  : t("settings.history.postProcessed")}
+              </p>
+              <p className="mt-1 text-[15px] leading-relaxed text-text select-text whitespace-pre-wrap break-words">
+                {entry.post_processed_text}
+              </p>
+            </div>
+          )}
         </div>
       )}
 

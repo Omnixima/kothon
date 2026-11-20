@@ -772,7 +772,9 @@
       "fixCancel": "Cancel",
       "fixError": "Couldn't save the fix",
       "learned": "Learned: {{words}}",
-      "off": "History is off, so new dictations aren't saved. Turn it back on in Settings › Advanced."
+      "off": "History is off, so new dictations aren't saved. Turn it back on in Settings › Advanced.",
+      "postProcessed": "After AI post-processing (this was pasted)",
+      "postProcessedSame": "AI post-processing ran, no changes"
     },
     "debug": {
       "title": "Probleemoplossing",
