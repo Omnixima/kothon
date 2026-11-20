@@ -399,7 +399,8 @@
       "sections": {
         "yours": "Sur cet ordinateur",
         "fits": "Pour vos langues",
-        "untested": "Non testés"
+        "untested": "Non testés",
+        "bengali": "Bengali models"
       },
       "untestedNote": "Non testés avec Kothon. Ils peuvent être plus lents ou faire plus d'erreurs.",
       "untestedHidden_one": "{{count}} autre modèle n'est pas adapté à la dictée. Utilisez la recherche pour le trouver.",
@@ -433,7 +434,11 @@
       "rescan": {
         "label": "Réanalyser",
         "tooltip": "Réanalyser pour détecter les modèles ajoutés au dossier des modèles ou au cache Hugging Face en dehors de Kothon"
-      }
+      },
+      "showOthers_one": "Show {{count}} model for other languages",
+      "showOthers_other": "Show {{count}} models for other languages",
+      "hideOthers": "Hide other languages' models",
+      "othersNote": "Kothon is made for Bengali. These are for English and other languages, such as the English model for Auto English."
     },
     "languages": {
       "title": "Langues"
@@ -936,22 +941,44 @@
         "description": "Kothon is open source (MIT)",
         "button": "View on GitHub"
       },
-      "supportDevelopment": {
-        "title": "Built on Handy",
-        "description": "Kothon is a fork of Handy by CJ Pais (MIT).",
-        "button": "View Handy"
-      },
       "acknowledgments": {
         "title": "Remerciements",
-        "ggml": {
-          "title": "ggml",
-          "description": "Inférence haute performance du modèle de reconnaissance vocale automatique Whisper d'OpenAI",
-          "details": "Kothon utilise ggml pour un traitement rapide et local de la parole en texte. Merci au travail incroyable de Georgi Gerganov et des contributeurs."
+        "software": "Software",
+        "models": "Models",
+        "credits": {
+          "handy": "CJ Pais · the app Kothon is built on",
+          "transcribe": "Runs the speech models on this computer (Georgi Gerganov and contributors)",
+          "candle": "Hugging Face · runs the punctuation model",
+          "silero": "Hears when someone is speaking",
+          "tauri": "The app framework",
+          "noto": "Google · the Bengali font",
+          "accurate": "bengaliAI/tugstugi_bengaliai-asr_whisper-medium · Erdene-Ochir Tuguldur (tugstugi), team Chimege",
+          "fast": "kazalbrur/Bangla-asr-fastconformer-116m-dialects",
+          "punctuation": "SayedShaun/asr-punctuation-restore-bn",
+          "whisper": "OpenAI · the original model design"
         },
-        "bengali": {
-          "title": "Bengali models",
-          "description": "Speech and punctuation models for Bengali",
-          "details": "Bengali speech recognition uses the BengaliAI Whisper-medium fine-tune by Erdene-Ochir Tuguldur (Apache-2.0) and the Bangla FastConformer by kazalbrur (Apache-2.0). Punctuation uses Tuguldur's MuRIL punctuation model (Apache-2.0). Kothon itself is built on Handy by CJ Pais (MIT)."
+        "footer": "Kothon itself is MIT licensed. © {{year}} Omnixima"
+      },
+      "omnixima": {
+        "title": "Omnixima",
+        "body": "Kothon is made by Omnixima. We want Bengali speakers to write in their own language with ease: no internet needed, and their words stay on their own computer.",
+        "open": "Kothon is open source. The code is on GitHub and the models are on Hugging Face, so anyone can see and improve them.",
+        "links": {
+          "website": {
+            "title": "Website",
+            "description": "omnixima.com",
+            "button": "Visit"
+          },
+          "models": {
+            "title": "Models",
+            "description": "Kothon's Bengali models on Hugging Face",
+            "button": "View on Hugging Face"
+          },
+          "privacy": {
+            "title": "Privacy Policy",
+            "description": "Kothon collects nothing. Your voice and text never leave this computer.",
+            "button": "Read the policy"
+          }
         }
       }
     }

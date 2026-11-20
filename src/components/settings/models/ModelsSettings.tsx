@@ -17,6 +17,9 @@ import { useModelEntries } from "./modelEntries";
 /** Past this many models on disk, the rest fold under "Show N more". */
 const YOURS_LIMIT = 5;
 
+/** Kothon's own Bengali models; every other model folds under "Other models". */
+const isKothon = (e: { id: string }) => e.id.startsWith("kothon-");
+
 /** Look for model files added outside Kothon: quiet, beside its section's name. */
 const Rescan: React.FC = () => {
   const { t } = useTranslation();
@@ -53,6 +56,7 @@ export const ModelsSettings: React.FC<ModelsSettingsProps> = ({
   const { facts, lists } = useModelEntries();
   const { filters, setFilters, searching, matches } = useModelFilters();
   const [more, setMore] = useState(false);
+  const [others, setOthers] = useState(false);
 
   if (loading) {
     return (
@@ -124,16 +128,46 @@ export const ModelsSettings: React.FC<ModelsSettingsProps> = ({
           ),
         },
         {
-          key: "fits",
-          label: t("settings.models.sections.fits"),
-          rows: lists.fits,
+          key: "bengali",
+          label: t("settings.models.sections.bengali"),
+          rows: [...lists.fits, ...lists.partial].filter(isKothon),
         },
-        {
-          key: "partial",
-          label: t("modelTable.missingLanguage"),
-          rows: lists.partial,
-        },
+        ...(others
+          ? [
+              {
+                key: "fits",
+                label: t("settings.models.sections.fits"),
+                rows: lists.fits.filter((e) => !isKothon(e)),
+              },
+              {
+                key: "partial",
+                label: t("modelTable.missingLanguage"),
+                rows: lists.partial.filter((e) => !isKothon(e)),
+              },
+            ]
+          : []),
       ];
+
+  // Kothon is for Bengali: other languages' models wait behind one button.
+  const otherCount = [...lists.fits, ...lists.partial].filter(
+    (e) => !isKothon(e),
+  ).length;
+  const othersButton = otherCount > 0 && (
+    <button
+      type="button"
+      onClick={() => setOthers((o) => !o)}
+      aria-expanded={others}
+      className="flex h-[28px] cursor-pointer items-center gap-[8px] rounded-[7px] px-[2px] text-small font-medium text-ink-2 hover:text-text focus:outline-none focus-visible:ring-1 focus-visible:ring-logo-primary"
+    >
+      {others
+        ? t("settings.models.hideOthers")
+        : t("settings.models.showOthers", { count: otherCount })}
+      <span
+        aria-hidden="true"
+        className={`inline-block size-[6px] shrink-0 border-e-[1.5px] border-b-[1.5px] border-current ${others ? "mt-[3px] -rotate-[135deg]" : "-mt-[3px] rotate-45"}`}
+      />
+    </button>
+  );
 
   return (
     <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col">
@@ -166,12 +200,22 @@ export const ModelsSettings: React.FC<ModelsSettingsProps> = ({
         actionsHead={<Legend tier={facts.tier} />}
         footer={
           !searching &&
-          lists.untested.length > 0 && (
-            <Note>
-              {t("settings.models.untestedHidden", {
-                count: lists.untested.length,
-              })}
-            </Note>
+          (otherCount > 0 || lists.untested.length > 0) && (
+            <div className="ps-[40px] pe-[12px]">
+              {othersButton}
+              {!others && otherCount > 0 && (
+                <p className="pb-[6px] text-small text-ink-3">
+                  {t("settings.models.othersNote")}
+                </p>
+              )}
+              {(others || otherCount === 0) && lists.untested.length > 0 && (
+                <p className="pt-[2px] pb-[6px] text-small text-ink-3">
+                  {t("settings.models.untestedHidden", {
+                    count: lists.untested.length,
+                  })}
+                </p>
+              )}
+            </div>
           )
         }
         thinEdge
