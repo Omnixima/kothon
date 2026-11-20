@@ -924,10 +924,6 @@
     },
     "about": {
       "title": "Tentang",
-      "version": {
-        "title": "Versi",
-        "description": "Versi Kothon saat ini"
-      },
       "whatsNewUpdates": {
         "label": "Tampilkan Yang Baru",
         "description": "Tampilkan catatan rilis setelah Kothon diperbarui"
@@ -935,11 +931,6 @@
       "appDataDirectory": {
         "title": "Direktori Data Aplikasi",
         "description": "Lokasi Kothon menyimpan datanya"
-      },
-      "sourceCode": {
-        "title": "Kode Sumber",
-        "description": "Kothon is open source (MIT)",
-        "button": "View on GitHub"
       },
       "acknowledgments": {
         "title": "Ucapan Terima Kasih",
@@ -969,6 +960,11 @@
             "description": "omnixima.com",
             "button": "Visit"
           },
+          "code": {
+            "title": "Source Code",
+            "description": "Kothon is open source (MIT)",
+            "button": "View on GitHub"
+          },
           "models": {
             "title": "Models",
             "description": "Kothon's Bengali models on Hugging Face",
@@ -978,8 +974,15 @@
             "title": "Privacy Policy",
             "description": "Kothon collects nothing. Your voice and text never leave this computer.",
             "button": "Read the policy"
+          },
+          "report": {
+            "title": "Report a Problem",
+            "description": "Kothon is in early access. Bug reports help a lot.",
+            "button": "Open an issue"
           }
-        }
+        },
+        "appName": "Kothon",
+        "by": "by Omnixima"
       }
     }
   },
@@ -1171,9 +1174,6 @@
   "beta": {
     "label": "Beta",
     "tooltip": "Kothon is in early access and may have bugs. Click to report one.",
-    "onboarding": "Early access: Kothon is new and may have rough edges. Tell us when something breaks.",
-    "reportTitle": "Report a Problem",
-    "reportDescription": "Kothon is in early access. Bug reports help a lot.",
-    "reportButton": "Open an issue"
+    "onboarding": "Early access: Kothon is new and may have rough edges. Tell us when something breaks."
   }
 }

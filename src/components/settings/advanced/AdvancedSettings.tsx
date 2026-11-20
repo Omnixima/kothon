@@ -32,6 +32,9 @@ import { BengaliNumbers } from "../BengaliNumbers";
 import { LearnedCorrections } from "../LearnedCorrections";
 import { HistoryToggle, ClearHistory } from "../HistoryControls";
 import { VadBackendSelector } from "../VadBackendSelector";
+import { ShowWhatsNewOnUpdate } from "../ShowWhatsNewOnUpdate";
+import { AppDataDirectory } from "../AppDataDirectory";
+import { LogDirectory } from "../debug";
 
 export const AdvancedSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -46,7 +49,10 @@ export const AdvancedSettings: React.FC = () => {
         <ShowTrayIcon descriptionMode="tooltip" grouped={true} />
         <ShowOverlay descriptionMode="tooltip" grouped={true} />
         <ModelUnloadTimeoutSetting descriptionMode="tooltip" grouped={true} />
+        <ShowWhatsNewOnUpdate descriptionMode="tooltip" grouped={true} />
         <ExperimentalToggle descriptionMode="tooltip" grouped={true} />
+        <AppDataDirectory descriptionMode="tooltip" grouped={true} />
+        <LogDirectory grouped={true} />
       </SettingsGroup>
 
       <SettingsGroup title={t("settings.advanced.groups.output")}>

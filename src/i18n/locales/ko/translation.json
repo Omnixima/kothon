@@ -924,10 +924,6 @@
     },
     "about": {
       "title": "정보",
-      "version": {
-        "title": "버전",
-        "description": "Handy의 현재 버전"
-      },
       "whatsNewUpdates": {
         "label": "새 소식 표시",
         "description": "Kothon 업데이트 후 릴리스 노트를 표시합니다"
@@ -935,11 +931,6 @@
       "appDataDirectory": {
         "title": "앱 데이터 디렉토리",
         "description": "Handy가 데이터를 저장하는 위치"
-      },
-      "sourceCode": {
-        "title": "소스 코드",
-        "description": "Kothon is open source (MIT)",
-        "button": "View on GitHub"
       },
       "acknowledgments": {
         "title": "감사의 말",
@@ -969,6 +960,11 @@
             "description": "omnixima.com",
             "button": "Visit"
           },
+          "code": {
+            "title": "Source Code",
+            "description": "Kothon is open source (MIT)",
+            "button": "View on GitHub"
+          },
           "models": {
             "title": "Models",
             "description": "Kothon's Bengali models on Hugging Face",
@@ -978,8 +974,15 @@
             "title": "Privacy Policy",
             "description": "Kothon collects nothing. Your voice and text never leave this computer.",
             "button": "Read the policy"
+          },
+          "report": {
+            "title": "Report a Problem",
+            "description": "Kothon is in early access. Bug reports help a lot.",
+            "button": "Open an issue"
           }
-        }
+        },
+        "appName": "Kothon",
+        "by": "by Omnixima"
       }
     }
   },
@@ -1171,9 +1174,6 @@
   "beta": {
     "label": "Beta",
     "tooltip": "Kothon is in early access and may have bugs. Click to report one.",
-    "onboarding": "Early access: Kothon is new and may have rough edges. Tell us when something breaks.",
-    "reportTitle": "Report a Problem",
-    "reportDescription": "Kothon is in early access. Bug reports help a lot.",
-    "reportButton": "Open an issue"
+    "onboarding": "Early access: Kothon is new and may have rough edges. Tell us when something breaks."
   }
 }

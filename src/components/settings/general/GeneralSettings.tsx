@@ -15,6 +15,8 @@ import { ModelSettingsCard } from "./ModelSettingsCard";
 import { PreferredLanguages } from "../PreferredLanguages";
 import { ChineseScriptSetting } from "../ChineseScript";
 import { isChinese } from "@/lib/utils/languageSuggestions";
+import { AppLanguageSelector } from "../AppLanguageSelector";
+import { ThemeSelector } from "../ThemeSelector";
 
 export const GeneralSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -31,6 +33,8 @@ export const GeneralSettings: React.FC = () => {
         <ShortcutActivationSetting descriptionMode="tooltip" grouped={true} />
         {/* Cancel shortcut remains hidden on Linux because of dynamic shortcut instability. */}
         {!isLinux && <ShortcutInput shortcutId="cancel" grouped={true} />}
+        <AppLanguageSelector descriptionMode="tooltip" grouped={true} />
+        <ThemeSelector descriptionMode="tooltip" grouped={true} />
       </SettingsGroup>
       <SettingsGroup title={t("settings.languages.title")}>
         <PreferredLanguages descriptionMode="tooltip" grouped={true} />

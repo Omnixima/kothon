@@ -6,22 +6,20 @@ import { SettingsGroup } from "../../ui/SettingsGroup";
 import { BetaBadge, ISSUES_URL } from "../../shared/BetaBadge";
 import { SettingContainer } from "../../ui/SettingContainer";
 import { Button } from "../../ui/Button";
-import { AppDataDirectory } from "../AppDataDirectory";
-import { AppLanguageSelector } from "../AppLanguageSelector";
-import { ShowWhatsNewOnUpdate } from "../ShowWhatsNewOnUpdate";
-import { ThemeSelector } from "../ThemeSelector";
-import { LogDirectory } from "../debug";
+import mark from "../../../assets/kothon-mark.png";
 
-type LinkKey = "website" | "models" | "privacy";
+type LinkKey = "website" | "code" | "models" | "privacy" | "report";
 
 /** Who makes Kothon, and where its code, models and privacy policy live. */
 const LINKS: { key: LinkKey; url: string }[] = [
   { key: "website", url: "https://omnixima.com" },
+  { key: "code", url: "https://github.com/Omnixima/kothon" },
   { key: "models", url: "https://huggingface.co/omnixima" },
   {
     key: "privacy",
     url: "https://github.com/Omnixima/kothon/blob/main/PRIVACY.md",
   },
+  { key: "report", url: ISSUES_URL },
 ];
 
 type CreditKey =
@@ -125,59 +123,31 @@ export const AboutSettings: React.FC = () => {
 
   return (
     <div className="max-w-3xl w-full mx-auto space-y-6">
-      <SettingsGroup title={t("settings.about.title")}>
-        <AppLanguageSelector descriptionMode="tooltip" grouped={true} />
-        <ThemeSelector descriptionMode="tooltip" grouped={true} />
-        <SettingContainer
-          title={t("settings.about.version.title")}
-          description={t("settings.about.version.description")}
-          grouped={true}
-        >
-          <span className="flex items-center gap-2">
+      {/* Who makes Kothon: the mark, the version, and Omnixima's few words. */}
+      <div className="flex items-start gap-4 px-4">
+        <img src={mark} alt="" className="size-14 shrink-0 rounded-2xl" />
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold">
+              {t("settings.about.omnixima.appName")}
+            </h1>
             {/* eslint-disable-next-line i18next/no-literal-string */}
-            <span className="text-sm font-mono">v{version}</span>
+            <span className="text-sm font-mono text-ink-3">v{version}</span>
             <BetaBadge />
-          </span>
-        </SettingContainer>
-        <SettingContainer
-          title={t("beta.reportTitle")}
-          description={t("beta.reportDescription")}
-          grouped={true}
-        >
-          <button
-            type="button"
-            onClick={() => void openUrl(ISSUES_URL)}
-            className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold hover:border-logo-primary hover:text-logo-primary"
-          >
-            {t("beta.reportButton")}
-          </button>
-        </SettingContainer>
-
-        <ShowWhatsNewOnUpdate descriptionMode="tooltip" grouped={true} />
-
-        <SettingContainer
-          title={t("settings.about.sourceCode.title")}
-          description={t("settings.about.sourceCode.description")}
-          grouped={true}
-        >
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => openUrl("https://github.com/Omnixima/kothon")}
-          >
-            {t("settings.about.sourceCode.button")}
-          </Button>
-        </SettingContainer>
-
-        <AppDataDirectory descriptionMode="tooltip" grouped={true} />
-        <LogDirectory grouped={true} />
-      </SettingsGroup>
+          </div>
+          <p className="text-sm font-medium text-logo-primary">
+            {t("settings.about.omnixima.by")}
+          </p>
+          <p className="mt-3 text-sm leading-relaxed">
+            {t("settings.about.omnixima.body")}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-3">
+            {t("settings.about.omnixima.open")}
+          </p>
+        </div>
+      </div>
 
       <SettingsGroup title={t("settings.about.omnixima.title")}>
-        <div className="px-4 py-3 text-sm leading-relaxed">
-          <p>{t("settings.about.omnixima.body")}</p>
-          <p className="mt-2 text-ink-3">{t("settings.about.omnixima.open")}</p>
-        </div>
         {LINKS.map((link) => (
           <SettingContainer
             key={link.key}
