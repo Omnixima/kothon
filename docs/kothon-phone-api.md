@@ -98,7 +98,9 @@ Errors (`{"error": "<code>"}`):
 
 ## Phone behavior
 
-- Off by default. Settings › "কম্পিউটার দিয়ে দ্রুত করুন" › scan the QR code.
+- Off by default. মডেল › "কম্পিউটার দিয়ে দ্রুত করুন" › "কম্পিউটার যুক্ত করুন" › scan the QR
+  code, or "লিংক পেস্ট করুন" with the link from the computer's "Copy Link".
+  A pair link opened from outside the app asks before it's used.
 - Before each dictation the phone already knows whether the computer answered
   recently (a `/v1/health` check when the app opens and every 30 s while it's
   open, with a 1.5 s timeout). If not, it transcribes on the phone straight
@@ -106,6 +108,20 @@ Errors (`{"error": "<code>"}`):
 - Upload timeout: 10 s plus the length of the recording. On a timeout or any
   error the phone transcribes the same audio itself.
 - The phone shows which one wrote the text ("কম্পিউটারে" or "ফোনে").
+
+## Concurrency
+
+Requests are handled in parallel, so `/v1/health` answers at once even while
+a dictation is being written. One dictation runs at a time; a second one gets
+`503 busy` straight away and its phone writes it itself.
+
+## Platform notes
+
+- iPhone: App Transport Security can't allow plain http to Tailscale's
+  `100.x` addresses, so the app talks to the computer through Network.framework,
+  which ATS doesn't cover. No ATS exception is needed.
+- Android: plain http is allowed for the app, and the code only sends it to
+  local-network, Tailscale, `.local` and `.ts.net` addresses.
 
 ## Security
 

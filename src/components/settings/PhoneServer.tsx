@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { RefreshCw } from "lucide-react";
+import { Copy, RefreshCw } from "lucide-react";
 import { commands, type PhonePairing } from "@/bindings";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
 import { SettingContainer } from "../ui/SettingContainer";
 import { Button } from "../ui/Button";
 import { useSettings } from "../../hooks/useSettings";
+import { notify } from "@/stores/noticeStore";
 
 interface Props {
   descriptionMode?: "inline" | "tooltip";
@@ -40,6 +41,16 @@ export const PhoneServer: React.FC<Props> = React.memo(
       setResetting(true);
       setPairing(await commands.resetPhoneServerKey());
       setResetting(false);
+    };
+
+    const copyLink = async () => {
+      if (!pairing) return;
+      try {
+        await navigator.clipboard.writeText(pairing.link);
+        notify({ title: t("settings.advanced.phoneServer.linkCopied") });
+      } catch {
+        // Nothing to tell: the QR code still pairs.
+      }
     };
 
     return (
@@ -95,7 +106,16 @@ export const PhoneServer: React.FC<Props> = React.memo(
                   <p className="text-ink-3">
                     {t("settings.advanced.phoneServer.away")}
                   </p>
-                  <div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => void copyLink()}
+                      className="inline-flex items-center gap-1.5"
+                    >
+                      <Copy width={14} height={14} />
+                      {t("settings.advanced.phoneServer.copyLink")}
+                    </Button>
                     <Button
                       variant="secondary"
                       size="sm"

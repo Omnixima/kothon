@@ -34,6 +34,9 @@ pub const API_VERSION: u32 = 1;
 const MAX_BODY_BYTES: usize = 25 * 1024 * 1024;
 
 static SERVER: Mutex<Option<Arc<Server>>> = Mutex::new(None);
+/// Held while a phone's dictation runs: one at a time, and a second one gets
+/// `busy` at once so its phone writes it itself.
+static TRANSCRIBING: Mutex<()> = Mutex::new(());
 
 /// What the Settings page shows to pair a phone.
 #[derive(Debug, Clone, Serialize, Type)]
@@ -100,10 +103,12 @@ fn start(app: &AppHandle) {
     info!("Kothon phone server: listening on port {PORT}");
     *guard = Some(server.clone());
     let app = app.clone();
-    // One request at a time: the model runs one transcription at a time anyway.
+    // Each request on its own thread, so a phone's health check answers
+    // within its 1.5 s limit even while a dictation is being written.
     thread::spawn(move || {
         for request in server.incoming_requests() {
-            handle(&app, request);
+            let app = app.clone();
+            thread::spawn(move || handle(&app, request));
         }
         info!("Kothon phone server: stopped");
     });
@@ -237,7 +242,7 @@ fn handle(app: &AppHandle, mut request: Request) {
                 .take(MAX_BODY_BYTES as u64 + 1)
                 .read_to_end(&mut body);
             if read.is_err() {
-                respond(request, 400, &serde_json::json!({ "error": "bad_body" }));
+                respond(request, 400, &serde_json::json!({ "error": "bad_audio" }));
                 return;
             }
             if body.len() > MAX_BODY_BYTES {
@@ -302,6 +307,9 @@ fn transcribe(
         // The phone dictates Bengali; an English model here would be wrong.
         return (409, serde_json::json!({ "error": "no_bengali_model" }));
     }
+    let Ok(_one_at_a_time) = TRANSCRIBING.try_lock() else {
+        return (503, serde_json::json!({ "error": "busy" }));
+    };
     if tm.ensure_model_unlocked().is_err() {
         return (503, serde_json::json!({ "error": "busy" }));
     }
