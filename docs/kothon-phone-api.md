@@ -98,7 +98,7 @@ Errors (`{"error": "<code>"}`):
 
 ## Phone behavior
 
-- Off by default. মডেল › "কম্পিউটার দিয়ে দ্রুত করুন" › "কম্পিউটার যুক্ত করুন" › scan the QR
+- Off by default. মডেল › "কম্পিউটার বা সার্ভার দিয়ে দ্রুত করুন" › "কম্পিউটার বা সার্ভার যুক্ত করুন" › scan the QR
   code, or "লিংক পেস্ট করুন" with the link from the computer's "Copy Link".
   A pair link opened from outside the app asks before it's used.
 - Before each dictation the phone already knows whether the computer answered

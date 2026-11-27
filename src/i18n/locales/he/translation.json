@@ -643,7 +643,7 @@
         "description": "Your phone sends what you say to this computer, and this computer writes it. Good for slow phones. To do this, this computer loads the speech model and keeps it ready. If the phone can't reach this computer, the phone writes it itself. Nothing goes to the internet.",
         "pairTitle": "Connect a Phone",
         "pairDescription": "Scan this code with your phone.",
-        "steps": "On your phone, open Kothon › মডেল › কম্পিউটার দিয়ে দ্রুত করুন › কম্পিউটার যুক্ত করুন, then scan this code. Your phone and this computer must be on the same Wi-Fi.",
+        "steps": "On your phone, open Kothon › মডেল › কম্পিউটার বা সার্ভার দিয়ে দ্রুত করুন › কম্পিউটার বা সার্ভার যুক্ত করুন, then scan this code. Your phone and this computer must be on the same Wi-Fi.",
         "modelNote": "This computer loads the speech model now. Until it's loaded, the phone may take a few extra seconds.",
         "computer": "Computer name: {{name}}",
         "away": "To use it away from home, install Tailscale on both and scan again.",
