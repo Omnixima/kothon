@@ -329,6 +329,13 @@ impl TranscriptionManager {
                     let settings = get_settings(&app_handle_cloned);
                     let timeout = settings.model_unload_timeout;
 
+                    // Kothon: phones may send dictations any time; keep the
+                    // model ready while the phone server is on.
+                    if settings.phone_server_enabled {
+                        manager_cloned.touch_activity();
+                        continue;
+                    }
+
                     // Skip Immediately — that variant is handled by
                     // maybe_unload_immediately() after each transcription.
                     // Treating it as 0s here would unload the model mid-recording.
@@ -523,6 +530,7 @@ impl TranscriptionManager {
         }
         let settings = get_settings(&self.app_handle);
         if settings.model_unload_timeout == ModelUnloadTimeout::Immediately
+            && !settings.phone_server_enabled
             && self.is_model_loaded()
         {
             info!("Immediately unloading model after {}", context);

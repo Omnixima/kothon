@@ -63,6 +63,9 @@ pub fn apply_settings(app: &AppHandle) {
             settings::write_settings(app, settings.clone());
         }
         start(app);
+        // Load the model now, so the phone's first dictation doesn't wait.
+        app.state::<Arc<TranscriptionManager>>()
+            .initiate_model_load(false);
     } else {
         stop();
     }

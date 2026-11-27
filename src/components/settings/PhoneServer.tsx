@@ -93,6 +93,9 @@ export const PhoneServer: React.FC<Props> = React.memo(
                   <p className="text-ink-2">
                     {t("settings.advanced.phoneServer.steps")}
                   </p>
+                  <p className="text-ink-2">
+                    {t("settings.advanced.phoneServer.modelNote")}
+                  </p>
                   <p className="text-ink-3">
                     {t("settings.advanced.phoneServer.computer", {
                       name: pairing.name,
