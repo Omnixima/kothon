@@ -1058,6 +1058,29 @@ async changeLearnFromCorrectionsSetting(enabled: boolean) : Promise<Result<null,
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Turns the phone server on or off.
+ */
+async changePhoneServerEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_phone_server_enabled_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * What the Settings page shows to pair a phone.
+ */
+async getPhonePairing() : Promise<PhonePairing> {
+    return await TAURI_INVOKE("get_phone_pairing");
+},
+/**
+ * Makes a new key, so phones paired before have to scan again.
+ */
+async resetPhoneServerKey() : Promise<PhonePairing> {
+    return await TAURI_INVOKE("reset_phone_server_key");
+},
 async toggleHistoryEntrySaved(id: number) : Promise<Result<null, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("toggle_history_entry_saved", { id }) };
@@ -1271,7 +1294,17 @@ learn_from_corrections_enabled?: boolean;
 /**
  * Kothon: corrections learned so far (see kothon_learn.rs).
  */
-learned_corrections?: LearnedCorrection[]; custom_filler_words?: string[] | null; 
+learned_corrections?: LearnedCorrection[]; 
+/**
+ * Kothon: let a phone with Kothon send its dictations to this computer
+ * (kothon_phone_server.rs). Off by default.
+ */
+phone_server_enabled?: boolean; 
+/**
+ * Kothon: the key a phone pairs with; made the first time the phone
+ * server is turned on.
+ */
+phone_server_key?: string; custom_filler_words?: string[] | null; 
 /**
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
@@ -1434,6 +1467,30 @@ export type LanguageStatus =
  * Auto can't work here; `language` is used instead.
  */
 { kind: "auto_unavailable"; language: string; reason: AutoUnavailableReason }
+/**
+ * What the Settings page shows to pair a phone.
+ */
+export type PhonePairing = { 
+/**
+ * Whether the server is listening right now.
+ */
+running: boolean; 
+/**
+ * The addresses a phone can reach this computer at, best first.
+ */
+urls: string[]; 
+/**
+ * This computer's name, shown on the phone.
+ */
+name: string; 
+/**
+ * The `kothon://pair?...` link the QR code holds.
+ */
+link: string; 
+/**
+ * The QR code of `link`, as an SVG document.
+ */
+qr_svg: string }
 export type LearnedCorrection = { 
 /**
  * What the model wrote (punctuation stripped, words joined by spaces).

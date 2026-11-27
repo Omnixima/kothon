@@ -478,6 +478,7 @@
         "output": "Изход",
         "transcription": "Транскрипция",
         "history": "История",
+        "phone": "Phone",
         "experimental": "Експериментални"
       },
       "experimentalToggle": {
@@ -636,6 +637,19 @@
           "traditionalTw": "Традиционни (Тайван)",
           "traditionalHk": "Традиционни (Хонконг)"
         }
+      },
+      "phoneServer": {
+        "title": "Speed Up Your Phone",
+        "description": "Let Kothon on your iPhone or Android phone send its dictations to this computer, which transcribes them faster with its own model. Off by default. The phone uses its own model whenever this computer can't be reached. Nothing leaves your own devices.",
+        "pairTitle": "Pair a Phone",
+        "pairDescription": "Scan this code with the phone's camera, or in Kothon on the phone: Settings › Use a Computer.",
+        "steps": "On the phone, open Kothon › Settings › Use a Computer and scan this code. The phone and this computer need to be on the same Wi-Fi.",
+        "computer": "This computer: {{name}}",
+        "away": "To use it away from home, install Tailscale on both and scan again.",
+        "pairAgain": "Pair Again",
+        "qrAlt": "QR code to pair a phone",
+        "notRunning": "Kothon couldn't start listening for phones. Another app may be using port 47821.",
+        "noNetwork": "This computer isn't connected to a network."
       },
       "learnFromCorrections": {
         "title": "Learn From Corrections",

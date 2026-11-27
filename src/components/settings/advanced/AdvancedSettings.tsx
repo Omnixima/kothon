@@ -30,6 +30,7 @@ import { EnglishWords } from "../EnglishWords";
 import { AutoEnglish } from "../AutoEnglish";
 import { BengaliNumbers } from "../BengaliNumbers";
 import { LearnedCorrections } from "../LearnedCorrections";
+import { PhoneServer } from "../PhoneServer";
 import { HistoryToggle, ClearHistory } from "../HistoryControls";
 import { VadBackendSelector } from "../VadBackendSelector";
 import { ShowWhatsNewOnUpdate } from "../ShowWhatsNewOnUpdate";
@@ -83,6 +84,10 @@ export const AdvancedSettings: React.FC = () => {
           grouped={true}
         />
         <ClearHistory descriptionMode="tooltip" grouped={true} />
+      </SettingsGroup>
+
+      <SettingsGroup title={t("settings.advanced.groups.phone")}>
+        <PhoneServer descriptionMode="tooltip" grouped={true} />
       </SettingsGroup>
 
       {experimentalEnabled && (

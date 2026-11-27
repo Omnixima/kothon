@@ -16,6 +16,7 @@ pub mod kothon;
 pub mod kothon_english;
 pub mod kothon_learn;
 pub mod kothon_numbers;
+pub mod kothon_phone_server;
 pub mod kothon_punct;
 mod language_detection;
 mod languages;
@@ -232,6 +233,9 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(history_manager.clone());
     app_handle.manage(tray::TrayState::new());
     app_handle.manage(TranscriptionJobManager::new(app_handle));
+
+    // Kothon: listen for phones if the user turned that on.
+    kothon_phone_server::apply_settings(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -824,6 +828,9 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_bengali_numbers_setting,
             commands::history::remove_learned_correction,
             shortcut::change_learn_from_corrections_setting,
+            kothon_phone_server::change_phone_server_enabled_setting,
+            kothon_phone_server::get_phone_pairing,
+            kothon_phone_server::reset_phone_server_key,
             commands::history::toggle_history_entry_saved,
             commands::history::get_audio_file_path,
             commands::history::delete_history_entry,

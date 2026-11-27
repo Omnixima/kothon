@@ -1011,7 +1011,20 @@ impl TranscriptionManager {
     /// Transcribe a whole clip in batch: a re-transcribed history entry, or
     /// a file from the CLI.
     pub fn transcribe(&self, audio: Vec<f32>) -> Result<String> {
-        Ok(self.complete(Instant::now(), audio, None)?.text)
+        Ok(self.complete(Instant::now(), audio, None, &|_| {})?.text)
+    }
+
+    /// Kothon: transcribe a clip a phone sent (see kothon_phone_server.rs).
+    /// `adjust` applies the phone's own text settings (numbers, punctuation,
+    /// English words) on top of this computer's.
+    pub fn transcribe_for_phone(
+        &self,
+        audio: Vec<f32>,
+        adjust: &dyn Fn(&mut AppSettings),
+    ) -> Result<Transcription> {
+        self.touch_activity();
+        self.initiate_model_load(false);
+        self.complete(Instant::now(), audio, None, adjust)
     }
 
     /// Transcribe a finished recording: what its live decode produced, or a
@@ -1019,7 +1032,7 @@ impl TranscriptionManager {
     pub fn transcribe_recording(&self, samples: Vec<f32>) -> Result<Transcription> {
         let started = Instant::now();
         let live = self.finalize_live(samples.len())?;
-        self.complete(started, samples, live)
+        self.complete(started, samples, live, &|_| {})
     }
 
     /// The final text of one transcription, from its live result or else a
@@ -1029,6 +1042,7 @@ impl TranscriptionManager {
         started: Instant,
         audio: Vec<f32>,
         live: Option<RunOutcome>,
+        adjust: &dyn Fn(&mut AppSettings),
     ) -> Result<Transcription> {
         #[cfg(debug_assertions)]
         if std::env::var("HANDY_FORCE_TRANSCRIPTION_FAILURE").is_ok() {
@@ -1082,7 +1096,8 @@ impl TranscriptionManager {
                 None => self.decode_batch(audio)?,
             },
         };
-        let settings = get_settings(&self.app_handle);
+        let mut settings = get_settings(&self.app_handle);
+        adjust(&mut settings);
         let language = outcome
             .setup
             .spoken_language(outcome.model_detected_language.as_deref());

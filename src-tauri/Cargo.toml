@@ -95,6 +95,11 @@ candle-transformers = "0.11.1"
 tokenizers = { version = "0.22", default-features = false, features = ["fancy-regex"] }
 ferrous-opencc = "0.2.3"
 clap = { version = "4", features = ["derive"] }
+# Kothon: the server a phone sends dictations to (kothon_phone_server.rs), the
+# QR code it pairs with, and the pairing key.
+tiny_http = "0.12"
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+getrandom = "0.3"
 specta = "=2.0.0-rc.22"
 specta-typescript = "0.0.9"
 tauri-specta = { version = "=2.0.0-rc.21", features = ["derive", "typescript"] }
