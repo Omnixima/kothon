@@ -556,6 +556,14 @@ pub struct AppSettings {
     /// Kothon: corrections learned so far (see kothon_learn.rs).
     #[serde(default)]
     pub learned_corrections: Vec<crate::kothon_learn::LearnedCorrection>,
+    /// Kothon: let a phone with Kothon send its dictations to this computer
+    /// (kothon_phone_server.rs). Off by default.
+    #[serde(default)]
+    pub phone_server_enabled: bool,
+    /// Kothon: the key a phone pairs with; made the first time the phone
+    /// server is turned on.
+    #[serde(default)]
+    pub phone_server_key: String,
     #[serde(default)]
     pub custom_filler_words: Option<Vec<String>>,
     /// Fresh installs default from the OS locale; existing stores are migrated
@@ -1111,6 +1119,8 @@ pub fn get_default_settings() -> AppSettings {
         kothon_english_model: None,
         bengali_numbers: default_bengali_numbers(),
         learned_corrections: Vec::new(),
+        phone_server_enabled: false,
+        phone_server_key: String::new(),
         custom_filler_words: None,
         chinese_script: default_chinese_script(),
         transcribe_accelerator: TranscribeAcceleratorSetting::default(),

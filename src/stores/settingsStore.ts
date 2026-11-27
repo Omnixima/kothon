@@ -211,6 +211,8 @@ const settingUpdaters: {
     commands.changeHistoryEnabledSetting(value as boolean),
   learn_from_corrections_enabled: (value) =>
     commands.changeLearnFromCorrectionsSetting(value as boolean),
+  phone_server_enabled: (value) =>
+    commands.changePhoneServerEnabledSetting(value as boolean),
   bengali_punctuation_enabled: (value) =>
     commands.changeBengaliPunctuationEnabledSetting(value as boolean),
   chinese_script: (value) =>
